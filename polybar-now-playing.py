@@ -2,7 +2,6 @@
 
 import json
 import subprocess
-import sys
 from time import sleep
 
 excluded_list = [
