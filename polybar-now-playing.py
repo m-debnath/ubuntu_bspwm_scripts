@@ -1,22 +1,9 @@
 #!/usr/bin/python3 -u
 
+import gi
 import json
-import subprocess
-from time import sleep
-
-excluded_list = [
-    "Prime Video",
-    "Netflix",
-    "Disney+ Hotstar",
-    "FMovies",
-    "Facebook",
-    "Twitter",
-    "Microsoft Teams",
-    "XVideos.com",
-    "JioCinema",
-]
-
-SLEEP_INTERVAL = 0.25
+gi.require_version('Playerctl', '2.0')
+from gi.repository import Playerctl, GLib
 
 ICON_TITLE = ""
 ICON_PLAY = ""
@@ -24,16 +11,10 @@ ICON_PAUSE = ""
 ICON_NEXT = ""
 ICON_PREVIOUS = ""
 
-music_title = ""
-music_artist = ""
-output = ""
+MAX_LENGTH_TITLE = 40
+MAX_LENGTH_ARTIST = 25
 
-TITLE_COMMAND = "playerctl metadata -f {{title}}"
-ARTIST_COMMAND = "playerctl metadata -f {{trunc(artist,25)}}"
-STATUS_COMMAND = "playerctl status"
-
-STATUS_PLAY = "Playing"
-STATUS_PAUSE = "Paused"
+manager = Playerctl.PlayerManager()
 
 def print_weather():
     with open("/home/mukul/.cache/weather.json", "rt") as f:
@@ -70,40 +51,68 @@ def print_weather():
             weather_icon = " "
         print("%{T3}" + weather_icon + "%{T-}  " + w_temp + "  " + w_condition + " in " + w_city + ", " + w_country)
 
-while True:
-    full_music_title = (
-        subprocess.run(TITLE_COMMAND.split(" "), capture_output=True)
-        .stdout.decode("UTF-8")
-        .replace("\n", "")
-    )
-    if len(full_music_title) > 30:
-        music_title = full_music_title[:30] + "..."
+
+def on_play(player, status, manager):
+    artist = player.get_artist()
+    title = player.get_title()
+    if artist and title:
+        if len(artist) > MAX_LENGTH_ARTIST:
+            artist = artist[:MAX_LENGTH_ARTIST] + "..."
+        if len(title) > MAX_LENGTH_TITLE:
+            title = title[:MAX_LENGTH_TITLE] + "..."
+        print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PAUSE + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
     else:
-        music_title = full_music_title
-    music_artist = (
-        subprocess.run(ARTIST_COMMAND.split(" "), capture_output=True)
-        .stdout.decode("UTF-8")
-        .replace("\n", "")
-    )
+        print("")
 
-    # Exit when no title
-    if not full_music_title or not music_artist:
-        print_weather()
-        sleep(SLEEP_INTERVAL)
-        continue
 
-    # Logic to exclude certain programs
-    for item in excluded_list:
-        if item.lower() in full_music_title.lower():
-            print_weather()
-            sleep(SLEEP_INTERVAL)
-            continue
+def on_pause(player, status, manager):
+    artist = player.get_artist()
+    title = player.get_title()
+    if artist and title:
+        if len(artist) > MAX_LENGTH_ARTIST:
+            artist = artist[:MAX_LENGTH_ARTIST] + "..."
+        if len(title) > MAX_LENGTH_TITLE:
+            title = title[:MAX_LENGTH_TITLE] + "..."
+        print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PLAY + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
+    else:
+        print("")
 
-    music_status = str(subprocess.run(STATUS_COMMAND.split(" "), capture_output=True))
 
-    if STATUS_PLAY in music_status:
-        output = "%{T3}" + ICON_TITLE + "%{T-}  " + music_artist + " - " + music_title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PAUSE + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}"
-    elif STATUS_PAUSE in music_status:
-        output = "%{T3}" + ICON_TITLE + "%{T-}  " + music_artist + " - " + music_title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PLAY + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}"
-    print(output)
-    sleep(SLEEP_INTERVAL)
+def on_metadata(player, metadata, manager):
+    artist = player.get_artist()
+    title = player.get_title()
+    if artist and title:
+        if len(artist) > MAX_LENGTH_ARTIST:
+            artist = artist[:MAX_LENGTH_ARTIST] + "..."
+        if len(title) > MAX_LENGTH_TITLE:
+            title = title[:MAX_LENGTH_TITLE] + "..."
+        if player.props.status == "Playing":
+            print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PAUSE + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
+        else:
+            print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PLAY + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
+    else:
+        print("")
+
+
+def init_player(name):
+    player = Playerctl.Player.new_from_name(name)
+    player.connect('playback-status::playing', on_play, manager)
+    player.connect('playback-status::paused', on_pause, manager)
+    player.connect('metadata', on_metadata, manager)
+    manager.manage_player(player)
+    artist = player.get_artist()
+    title = player.get_title()
+    if artist and title:
+        if player.props.status == "Playing":
+            print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PAUSE + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
+        else:
+            print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PLAY + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
+    else:
+        print("")
+
+for name in manager.props.player_names:
+    init_player(name)
+
+# wait for events
+main = GLib.MainLoop()
+main.run()
