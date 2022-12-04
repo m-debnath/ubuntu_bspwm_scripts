@@ -16,7 +16,7 @@ MAX_LENGTH_ARTIST = 25
 
 manager = Playerctl.PlayerManager()
 
-def print_weather():
+def print_weather_output():
     with open("/home/mukul/.cache/weather.json", "rt") as f:
         data = json.load(f)
         weather_icon = " "
@@ -52,33 +52,7 @@ def print_weather():
         print("%{T3}" + weather_icon + "%{T-}  " + w_temp + "  " + w_condition + " in " + w_city + ", " + w_country)
 
 
-def on_play(player, status, manager):
-    artist = player.get_artist()
-    title = player.get_title()
-    if artist and title:
-        if len(artist) > MAX_LENGTH_ARTIST:
-            artist = artist[:MAX_LENGTH_ARTIST] + "..."
-        if len(title) > MAX_LENGTH_TITLE:
-            title = title[:MAX_LENGTH_TITLE] + "..."
-        print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PAUSE + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
-    else:
-        print("")
-
-
-def on_pause(player, status, manager):
-    artist = player.get_artist()
-    title = player.get_title()
-    if artist and title:
-        if len(artist) > MAX_LENGTH_ARTIST:
-            artist = artist[:MAX_LENGTH_ARTIST] + "..."
-        if len(title) > MAX_LENGTH_TITLE:
-            title = title[:MAX_LENGTH_TITLE] + "..."
-        print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PLAY + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
-    else:
-        print("")
-
-
-def on_metadata(player, metadata, manager):
+def print_music_output(player):
     artist = player.get_artist()
     title = player.get_title()
     if artist and title:
@@ -91,7 +65,19 @@ def on_metadata(player, metadata, manager):
         else:
             print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PLAY + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
     else:
-        print("")
+        print_weather_output()
+
+
+def on_play(player, status, manager):
+    print_music_output(player)
+
+
+def on_pause(player, status, manager):
+    print_music_output(player)
+
+
+def on_metadata(player, metadata, manager):
+    print_music_output(player)
 
 
 def init_player(name):
@@ -100,15 +86,7 @@ def init_player(name):
     player.connect('playback-status::paused', on_pause, manager)
     player.connect('metadata', on_metadata, manager)
     manager.manage_player(player)
-    artist = player.get_artist()
-    title = player.get_title()
-    if artist and title:
-        if player.props.status == "Playing":
-            print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PAUSE + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
-        else:
-            print("%{T3}" + ICON_TITLE + "%{T-}  " + artist + " - " + title + "  %{T3}%{A1:playerctl previous:}" + ICON_PREVIOUS + "%{A}  %{A1:playerctl play-pause:}" + ICON_PLAY + "%{A}  %{A1:playerctl next:}" + ICON_NEXT + "%{A}%{T-}")
-    else:
-        print("")
+    print_music_output(player)
 
 for name in manager.props.player_names:
     init_player(name)
