@@ -1,7 +1,9 @@
 #!/usr/bin/python3 -u
 
+import gi
 import json
 
+gi.require_version("Playerctl", "2.0")
 from gi.repository import GLib, Playerctl
 
 ICON_TITLE = ""
