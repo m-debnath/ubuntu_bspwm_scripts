@@ -1,7 +1,8 @@
 #!/usr/bin/python3 -u
 
 import gi
-import json
+
+# import json
 
 gi.require_version("Playerctl", "2.0")
 from gi.repository import GLib, Playerctl
@@ -18,51 +19,51 @@ MAX_LENGTH_ARTIST = 25
 manager = Playerctl.PlayerManager()
 
 
-def print_weather_output():
-    with open("/home/mukul/.cache/weather.json", "rt") as f:
-        data = json.load(f)
-        weather_icon = " "
-        w_condition = data["weather"][0]["main"]
-        w_city = data["name"]
-        w_country = data["sys"]["country"]
-        w_temp = str(int(round(float(data["main"]["temp"])))) + "°C"
-        if w_condition == "Clear":
-            weather_icon = " "
-        elif w_condition == "Clouds":
-            weather_icon = " "
-        elif w_condition == "Drizzle":
-            weather_icon = " "
-        elif w_condition == "Rain":
-            weather_icon = " "
-        elif w_condition == "Thunderstorm":
-            weather_icon = " "
-        elif w_condition == "Snow":
-            weather_icon = " "
-        elif w_condition in [
-            "Mist",
-            "Smoke",
-            "Haze",
-            "Dust",
-            "Fog",
-            "Sand",
-            "Dust",
-            "Ash",
-            "Squall",
-            "Tornado",
-        ]:
-            weather_icon = " "
-        print(
-            "%{T3}"
-            + weather_icon
-            + "%{T-}  "
-            + w_temp
-            + "  "
-            + w_condition
-            + " in "
-            + w_city
-            + ", "
-            + w_country
-        )
+# def print_weather_output():
+#     with open("/home/mukul/.cache/weather.json", "rt") as f:
+#         data = json.load(f)
+#         weather_icon = " "
+#         w_condition = data["weather"][0]["main"]
+#         w_city = data["name"]
+#         w_country = data["sys"]["country"]
+#         w_temp = str(int(round(float(data["main"]["temp"])))) + "°C"
+#         if w_condition == "Clear":
+#             weather_icon = " "
+#         elif w_condition == "Clouds":
+#             weather_icon = " "
+#         elif w_condition == "Drizzle":
+#             weather_icon = " "
+#         elif w_condition == "Rain":
+#             weather_icon = " "
+#         elif w_condition == "Thunderstorm":
+#             weather_icon = " "
+#         elif w_condition == "Snow":
+#             weather_icon = " "
+#         elif w_condition in [
+#             "Mist",
+#             "Smoke",
+#             "Haze",
+#             "Dust",
+#             "Fog",
+#             "Sand",
+#             "Dust",
+#             "Ash",
+#             "Squall",
+#             "Tornado",
+#         ]:
+#             weather_icon = " "
+#         print(
+#             "%{T3}"
+#             + weather_icon
+#             + "%{T-}  "
+#             + w_temp
+#             + "  "
+#             + w_condition
+#             + " in "
+#             + w_city
+#             + ", "
+#             + w_country
+#         )
 
 
 def print_music_output(player):
@@ -106,7 +107,8 @@ def print_music_output(player):
                 + "%{A}%{T-}"
             )
     else:
-        print_weather_output()
+        # print_weather_output()
+        print("")
 
 
 def on_play(player, status, manager):
