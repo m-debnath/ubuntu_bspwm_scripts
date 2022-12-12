@@ -229,33 +229,58 @@ def handle_change(new_state: dict):
         or new_state["class"] == "Nvidia-settings"
     ):
         output_icon = ""
-    elif new_state["class"] == "Update-manager" or new_state["class"] == "Software-properties-gtk":
+    elif (
+        new_state["class"] == "Update-manager"
+        or new_state["class"] == "Software-properties-gtk"
+    ):
         output_icon = ""
     elif new_state["class"] == "Gnome-mines":
         output_icon = ""
+    elif new_state["class"] == "Evince":
+        output_icon = ""
     elif new_state["class"] == "Google-chrome" or new_state["class"] == "firefox":
         chrome_icon = ""
         firefox_icon = ""
         if new_state["title"].startswith("Gmail") or "- Gmail" in new_state["title"]:
             output_icon = ""
-        elif new_state["title"].startswith("Facebook") or "- Facebook" in new_state["title"]:
+        elif (
+            new_state["title"].startswith("Facebook")
+            or "- Facebook" in new_state["title"]
+        ):
             output_icon = ""
             output_icon_color = "#2374E1"
-        elif new_state["title"].startswith("Twitter") or "/ Twitter" in new_state["title"]:
+        elif (
+            new_state["title"].startswith("Twitter")
+            or "/ Twitter" in new_state["title"]
+        ):
             output_icon = ""
             output_icon_color = "#1C98EB"
-        elif new_state["title"].startswith("YouTube") or "- YouTube" in new_state["title"]:
+        elif (
+            new_state["title"].startswith("YouTube")
+            or "- YouTube" in new_state["title"]
+        ):
             output_icon = ""
             output_icon_color = "#FF0000"
-        elif new_state["title"].startswith("Amazon.in") or "- Amazon.in" in new_state["title"]:
+        elif (
+            new_state["title"].startswith("Amazon.in")
+            or "- Amazon.in" in new_state["title"]
+        ):
             output_icon = ""
-        elif new_state["title"].startswith("Google Maps") or "- Google Maps" in new_state["title"]:
+        elif (
+            new_state["title"].startswith("Google Maps")
+            or "- Google Maps" in new_state["title"]
+        ):
             output_icon = ""
-        elif new_state["title"].startswith("iCloud") or "- iCloud" in new_state["title"]:
+        elif (
+            new_state["title"].startswith("iCloud") or "- iCloud" in new_state["title"]
+        ):
             output_icon = ""
         elif new_state["title"].startswith("Apple TV+"):
             output_icon = ""
-        elif new_state["title"].startswith("LinkedIn") or "| LinkedIn" in new_state["title"]:
+        elif (
+            new_state["title"].startswith("LinkedIn")
+            or "| LinkedIn" in new_state["title"]
+        ):
             output_icon = ""
             output_icon_color = "#0073B2"
         elif new_state["title"].startswith("WhatsApp"):
