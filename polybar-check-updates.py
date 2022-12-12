@@ -8,4 +8,7 @@ try:
 except OSError:
     pass
 
-print(update_count)
+if update_count == "0":
+    print("")
+else:
+    print(update_count)
