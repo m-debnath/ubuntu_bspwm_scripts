@@ -17,6 +17,8 @@ elif "xkeyboard sep sep sep-primary check_update" in data:
         "xkeyboard sep sep sep-primary check_update",
         "xkeyboard sep sep sep-primary cpu gpu-usage memory filesystem homefilesystem check_update",
     )
+else:
+    result = data
 
 
 # if "cpu gpu-usage memory" in data and "memory filesystem homefilesystem check_update" in data:
