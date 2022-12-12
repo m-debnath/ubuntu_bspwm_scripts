@@ -5,17 +5,17 @@ with open("/home/mukul/.config/polybar/config", "rt") as f:
 
 
 if (
-    "xkeyboard sep sep sep-primary cpu gpu-usage memory filesystem homefilesystem check_update"
+    "xkeyboard sep sep cpu gpu-usage memory filesystem homefilesystem check_update"
     in data
 ):
     result = data.replace(
-        "xkeyboard sep sep sep-primary cpu gpu-usage memory filesystem homefilesystem check_update",
-        "xkeyboard sep sep sep-primary check_update",
+        "xkeyboard sep sep cpu gpu-usage memory filesystem homefilesystem check_update",
+        "xkeyboard sep sep check_update",
     )
-elif "xkeyboard sep sep sep-primary check_update" in data:
+elif "xkeyboard sep sep check_update" in data:
     result = data.replace(
-        "xkeyboard sep sep sep-primary check_update",
-        "xkeyboard sep sep sep-primary cpu gpu-usage memory filesystem homefilesystem check_update",
+        "xkeyboard sep sep check_update",
+        "xkeyboard sep sep cpu gpu-usage memory filesystem homefilesystem check_update",
     )
 else:
     result = data
