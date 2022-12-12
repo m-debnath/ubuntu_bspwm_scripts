@@ -238,6 +238,7 @@ def handle_change(new_state: dict):
         output_icon = ""
     elif new_state["class"] == "Evince":
         output_icon = ""
+        output_icon_color = "#AD0B00"
     elif new_state["class"] == "Google-chrome" or new_state["class"] == "firefox":
         chrome_icon = ""
         firefox_icon = ""
