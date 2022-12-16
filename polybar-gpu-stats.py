@@ -3,8 +3,12 @@
 import subprocess
 import sys
 
-GPU_TEMP_COMMAND = "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits"
-GPU_USAGE_COMMAND = "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits"
+GPU_TEMP_COMMAND = (
+    "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits"
+)
+GPU_USAGE_COMMAND = (
+    "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits"
+)
 
 mode = ""
 if len(sys.argv) >= 2:
