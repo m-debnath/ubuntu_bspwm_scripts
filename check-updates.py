@@ -12,7 +12,7 @@ UPDATES_AVAILABLE_PATTERN = re.compile(UPDATES_AVAILABLE, flags=re.MULTILINE)
 output = str(subprocess.run(UPDATE_CHECK_COMMAND.split(" "), capture_output=True))
 update_count = "0"
 
-if not UPDATES_NOT_AVAILABLE in output:
+if UPDATES_NOT_AVAILABLE not in output:
     result = re.search(UPDATES_AVAILABLE_PATTERN, output)
     if result and len(result.groups()) > 0:
         update_count = result.groups()[0]
