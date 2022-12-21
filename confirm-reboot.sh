@@ -4,7 +4,7 @@ CHOICE=$( echo -en "Yes\0icon\x1fobject-select-symbolic\nNo\0icon\x1fwindow-clos
 
 if [ x"Yes" = x"${CHOICE}" ]
 then
-    sudo reboot
+    systemctl reboot
 else
     exit 0
 fi
