@@ -214,7 +214,11 @@ def handle_change(new_state: dict):
         or new_state["class"] == "Shotwell"
     ):
         output_icon = ""
-    elif new_state["class"] == "MyPaint" or new_state["class"] == "libreoffice-draw":
+    elif (
+        new_state["class"] == "MyPaint"
+        or new_state["class"] == "libreoffice-draw"
+        or new_state["class"] == "Gpaint"
+    ):
         output_icon = ""
         output_icon_font = "7"
     elif new_state["class"] == "flameshot":
